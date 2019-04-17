@@ -70,6 +70,22 @@ public class RpcHelper {//RpcHelper为了帮助其他entry point来生成数据�
 		return result;
 	}
 	
+	// Parses a JSONObject from http request.
+		public static JSONObject readJSONObject(HttpServletRequest request) {
+			StringBuilder sBuilder = new StringBuilder();
+			try (BufferedReader reader = request.getReader()) {
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					sBuilder.append(line);
+				}
+				return new JSONObject(sBuilder.toString());
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return new JSONObject();
+		}
+	
 
 
 }

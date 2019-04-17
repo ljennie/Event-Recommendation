@@ -1,6 +1,5 @@
 package db.mysql;
 
-import java.util.Map;
 
 // Step 3, create MySQL version of DBConnection implementation
 

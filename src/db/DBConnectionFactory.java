@@ -8,7 +8,7 @@ import db.mysql.MySQLConnection;
 
 public class DBConnectionFactory {
 
-	private static final String DEFAULT_DB = "mongodb";
+	private static final String DEFAULT_DB = "mysql";
 	
 	public static DBConnection getConnection(String db) {//getConnection获得具体的实现
 		// 根据db不同来创建connection

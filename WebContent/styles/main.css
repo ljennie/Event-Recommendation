@@ -1,9 +1,5 @@
-/* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
-
-
-/* step1: init */
 * {
-	box-sizing: border-box; /* IE box */
+	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
 }
@@ -13,64 +9,81 @@ body {
 	color: #FFFFFF;
 	font-family: 'Open Sans', sans-serif;
 	font-weight: 300;
-	font-size: 0.9em;/* 相对于parent的大小： 0.9 ＊ 16 ＝ 14.4px */
-} 
+	font-size: 0.9em;
+}
 
 ul {
 	list-style: none;
-} 
+}
 
-/* step2: top header */
-/* 2.1 header 最上面那条红色的*/
+/**
+ * top header
+ */
 .top-header {
 	align-items: center;
 	background: #DF574B;
 	box-shadow: 0px 2px 10px #333333;
-	display: flex; 
+	display: flex;
 	height: 60px;
 	position: fixed;
 	top: 0;
 	width: 100%;
 	z-index: 1;
-} 
+}
 
-
-.avatar {/* 最上面黑色小人和一个圈 */
+.avatar {
 	background: #FFFFFF;
 	border-radius: 50%;
 	color: #333C4D;
 	height: 40px;
 	margin-right: 20px;
+    margin-left: 10px;
 	padding-left: 9px;
 	padding-top: 5px;
 	width: 40px;
-} 
+}
 
-/* 2.2 top navigation */
-.top-nav {/* class选择器 */
-	flex: 1; /* flex是弹性布局(flex-grow: item的放大比例/flex-shrink/ flex-basis) */
-} 
+#logout-link {
+	padding-left: 10px;
+	color: white;
+}
 
-.top-nav a {/* a是在top-nav下的: 最上面黑色小人和一个圈向右移动了*/
+/**
+ * top navigation
+ */
+.top-nav {
+	flex: 1;
+}
+
+.top-nav a {
 	color: #F9F9F9;
 	font-weight: 400;
 	margin-left: 20px;
 	text-decoration: none;
 }
 
-/* step3: main container */
+#welcome-msg {
+	border-right: 1px solid #FFFFFF;
+	padding-right: 10px;
+}
+
+/**
+ * main container
+ */
 .container {
 	margin: 60px auto;
 	max-width: 1000px;
 	min-width: 600px;
-} 
+}
 
-/* 3.1 main header */
+/**
+ * main header
+ */
 .container>header {
 	align-items: center;
-	background:/* 图片来源 */
-		url('http://prophoto.com.cy/wp-content/galleries/food/food-restaurant-photographer-cyprus-10.jpg')
-		no-repeat 50% 50%;
+	background:
+		url('http://eudreamvilla.com/wp-content/uploads/2017/10/romantic-dinner.jpg')
+		no-repeat 50% 40%;
 	background-size: 100%;
 	display: flex;
 	height: 250px;
@@ -83,32 +96,122 @@ ul {
 	line-height: 1em;
 	margin-left: 220px;
 	padding-left: 5px;
-} 
+}
 
-
-.container>header span { /* item字体变色 */
+.container>header span {
 	color: #FBAF41;
 }
 
+/**
+ * login form
+ */
+#login-form {
+	color: #624630;
+	margin: 0px auto;
+	overflow: auto;
+	padding: 40px;
+	width: 350px;
+}
 
-/* 3.2 main section */
+#login-form label {
+	display: block;
+}
+
+#login-form input {
+	border: none;
+	display: block;
+	margin-bottom: 10px;
+	padding: 8px;
+	width: 100%;
+}
+
+#login-form #login-btn {
+	cursor: pointer;
+	float: right;
+	padding: 8px 20px;
+	text-align: right;
+}
+
+#login-form #register-form-btn {
+	cursor: pointer;
+	float: left;
+	padding: 8px 10px;
+	text-align: left;
+}
+
+#login-error {
+	clear: both;
+	color: #990000;
+	padding-top: 10px;
+}
+
+/**
+ * register form
+ */
+#register-form {
+	color: #624630;
+	margin: 0px auto;
+	overflow: auto;
+	padding: 40px;
+	width: 350px;
+}
+
+#register-form label {
+	display: block;
+}
+
+#register-form input {
+	border: none;
+	display: block;
+	margin-bottom: 10px;
+	padding: 8px;
+	width: 100%;
+}
+
+#register-form #login-form-btn {
+	cursor: pointer;
+	float: left;
+	padding: 8px 10px;
+	text-align: left;
+}
+
+#register-form #register-btn {
+	cursor: pointer;
+	float: right;
+	padding: 8px 20px;
+	text-align: right;
+}
+
+#register-result {
+	clear: both;
+	color: #990000;
+	padding-top: 10px;
+}
+
+/**
+ * main section
+ */
 .main-section {
 	background: #F3BB43;
 }
 
-
-/* 3.2.1 aside */
+/**
+ * aside
+ */
 #item-nav {
 	float: left;
 	width: 180px;
 }
+
 .nav-icon {
 	color: #624630;
 	padding: 20px;
 	text-align: center;
-} 
+}
 
-/* 3.2.2 main navigation */
+/**
+ * main navigation
+ */
 .main-nav-btn {
 	background: none;
 	border-top: 1px solid #FFFFFF;
@@ -127,13 +230,15 @@ ul {
 .main-nav-btn.active {
 	background: #F2EBD9;
 	color: #624630;
-} 
+}
 
 .main-nav-btn i {
 	width: 20px;
-} 
+}
 
-/* 3.3 item list */
+/**
+ * item list
+ */
 #item-list {
 	background: #F2EBD9;
 	color: #624630;
@@ -143,15 +248,15 @@ ul {
 	padding: 10px;
 }
 
-#item-list .notice {/* ide里没有item-list .notice，这个要在js动态加入 */
+#item-list .notice {
 	font-size: 16px;
 	padding: 60px;
 	text-align: center;
-} 
+}
 
-
-/* item */
-
+/**
+ * item
+ */
 .item {
 	align-items: center;
 	border-bottom: 1px solid #FFFFFF;
@@ -161,23 +266,22 @@ ul {
 	transition: background-color 100ms linear;
 }
 
-.item:last-child {/* 最好item不要folder */
+.item:last-child {
 	border: none;
 }
 
-
-.item:hover {/* 鼠标放上去颜色会变 */
+.item:hover {
 	background: rgba(255, 255, 255, 0.8);
-	transition: background-color 100ms linear;/* transition过渡格式，用来设置过渡属性的*/
+	transition: background-color 100ms linear;
 }
 
-.item img {/* 图片缩小 */
+.item img {
 	border: 1px solid #FFFFFF;
 	height: 80px;
 	width: 80px;
 }
 
-.item>div:first-of-type {/* 有两个div，对第一个div进行设置 */
+.item>div:first-of-type {
 	flex: 1;
 	margin-left: 10px;
 	margin-right: 10px;
@@ -189,24 +293,23 @@ ul {
 	text-decoration: none;
 }
 
-.item-name:hover {/* 鼠标放上去以后有个underline */
+.item-name:hover {
 	text-decoration: underline;
 }
 
-.item-address {/* 地址的设置 */
-	line-height: 20px;/* 让文字居中（纵向居中），比较常用 */
+.item-address {
+	line-height: 20px;
 	padding-right: 20px;
-	text-align: right;/* 横向居中 */
-	/* height:  */
-} 
+	text-align: right;
+}
 
 .stars {
 	align-items: center;
 	display: flex;
 	padding-top: 10px;
-} 
+}
 
-.fav-link {/* 设置链接 */
+.fav-link {
 	border-left: 1px solid #FFFFFF;
 	cursor: pointer;
 	line-height: 60px;
@@ -214,14 +317,16 @@ ul {
 	width: 60px;
 }
 
-.fav-link:hover {/* 鼠标放上去变成红色的 */
+.fav-link:hover {
 	color: #F13F3F;
 }
 
-/* step4: footer section */
+/**
+ * footer section
+ */
 footer {
 	background: #434343;
-	font-size: 0.8em;/* 相对于parent的大小： 0.8 ＊ 14.4(parent(p tag)) = 11.52 */
+	font-size: 0.8em;
 	height: 200px;
 	position: relative;
 }
@@ -243,4 +348,4 @@ footer ul {
 
 footer ul li {
 	flex: 1;
-} 
+}

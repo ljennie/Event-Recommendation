@@ -9,132 +9,129 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import java.util.List;
+import java.util.Set;
+
 import db.DBConnection;
 import entity.Item;
 import entity.Item.ItemBuilder;
 import external.TicketMasterAPI;
 
-//implement DBConnection interface: 对数据库MySQL进行操作，插入，删除
-//this is a singleton pattern
 public class MySQLConnection implements DBConnection {
+
 	private Connection conn;
-	
-	// 创建connection, java和MySQL的连接
+
 	public MySQLConnection() {
 		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();//java和jdbc连接
-			//newInstance 用来调用 反射来生成 class.initalization
-			conn = DriverManager.getConnection(MySQLDBUtil.URL);//jdbc和MySQL连接
+			Class.forName("com.mysql.cj.jdbc.Driver").getConstructor().newInstance();
+			conn = DriverManager.getConnection(MySQLDBUtil.URL);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
-	public void close() {// close connection
-		if (conn != null) {// 检测conn是否创建成功，如果创建成功那就不是null
+	public void close() {
+		if (conn != null) {
 			try {
 				conn.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	@Override
-	public void setFavoriteItems(String userId, List<String> itemIds) {//操作sql的history，向里面insert东西
+	public void setFavoriteItems(String userId, List<String> itemIds) {
 		if (conn == null) {
+			System.err.println("DB connection failed");
 			return;
 		}
-		
+
 		try {
-			String sql = "INSERT IGNORE INTO history (user_id, item_id) VALUES (?, ?)";
-			// 虽然我们只插入了user_id和item_id，对于last_favor_time他会默认插入(详细见MySQLTableCreation)
-			PreparedStatement stmt = conn.prepareStatement(sql);//要针对当前的connection来创建stmt
+			String sql = "INSERT IGNORE INTO history(user_id, item_id) VALUES (?, ?)";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, userId);
 			for (String itemId : itemIds) {
-				stmt.setString(1, userId);
-				stmt.setString(2, itemId);
-				// itemId 为什么设置为string？因为ticketmaster返回的itemId是一串hashValue(geoHash)，所以用string存比较方便
-				stmt.execute();
+				ps.setString(2, itemId);
+				ps.execute();
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
 
 	@Override
-	public void unsetFavoriteItems(String userId, List<String> itemIds) {//操作sql的history，向里面delete东西
+	public void unsetFavoriteItems(String userId, List<String> itemIds) {
 		if (conn == null) {
+			System.err.println("DB connection failed");
 			return;
 		}
-		
+
 		try {
 			String sql = "DELETE FROM history WHERE user_id = ? AND item_id = ?";
-			PreparedStatement stmt = conn.prepareStatement(sql);
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, userId);
 			for (String itemId : itemIds) {
-				stmt.setString(1, userId);
-				stmt.setString(2, itemId);
-				stmt.execute();
+				ps.setString(2, itemId);
+				ps.execute();
 			}
-		} catch (SQLException e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
 
 	@Override
-	public Set<String> getFavoriteItemIds(String userId) {//通过history表，history表可以通过user_id获得item_id
+	public Set<String> getFavoriteItemIds(String userId) {
 		if (conn == null) {
 			return new HashSet<>();
 		}
-		
-		Set<String> favoriteItemIds = new HashSet<>();
-		
+
+		Set<String> favoriteItems = new HashSet<>();
+
 		try {
-			String sql = "SELECT item_id from history where user_id = ?";
+			String sql = "SELECT item_id FROM history WHERE user_id = ?";
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setString(1, userId);
+
 			ResultSet rs = stmt.executeQuery();
+
 			while (rs.next()) {
 				String itemId = rs.getString("item_id");
-				favoriteItemIds.add(itemId);
+				favoriteItems.add(itemId);
 			}
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		return favoriteItemIds;
+
+		return favoriteItems;
 
 	}
 
 	@Override
-	public Set<Item> getFavoriteItems(String userId) {//把用户添加过的setfavoriteItem内容给找出来
-									// 一个userId可能对应多个itemId
+	public Set<Item> getFavoriteItems(String userId) {
 		if (conn == null) {
 			return new HashSet<>();
 		}
-		
+
 		Set<Item> favoriteItems = new HashSet<>();
 		Set<String> itemIds = getFavoriteItemIds(userId);
-		
+
 		try {
 			String sql = "SELECT * FROM items WHERE item_id = ?";
-			// *表示对所有的column感兴趣
-			// String sql = "SELECT item_id, rating FROM items WHERE item_id = ?";
-			// String sql = "SELECT * FROM items WHERE item_id = ? AND rating > 4.0";
-			// "?" 为了防止sql injection
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			for (String itemId : itemIds) {
-				stmt.setString(1, itemId);//itemId从TicketMaster里取出来的是一个string
-				ResultSet rs = stmt.executeQuery();//select后我们关心返回的值了，executeQuery()返回ResultSet
-				//ResultSet是可以用iterate来返回的数据结构
-				
+				stmt.setString(1, itemId);
+
+				ResultSet rs = stmt.executeQuery();
+
 				ItemBuilder builder = new ItemBuilder();
-				
-				while (rs.next()) {//java iterator//rs逻辑上指向-1
+
+				while (rs.next()) {
 					builder.setItemId(rs.getString("item_id"));
 					builder.setName(rs.getString("name"));
 					builder.setAddress(rs.getString("address"));
@@ -143,7 +140,7 @@ public class MySQLConnection implements DBConnection {
 					builder.setCategories(getCategories(itemId));
 					builder.setDistance(rs.getDouble("distance"));
 					builder.setRating(rs.getDouble("rating"));
-					
+
 					favoriteItems.add(builder.build());
 				}
 			}
@@ -151,6 +148,7 @@ public class MySQLConnection implements DBConnection {
 			e.printStackTrace();
 		}
 		return favoriteItems;
+
 	}
 
 	@Override
@@ -165,93 +163,85 @@ public class MySQLConnection implements DBConnection {
 			statement.setString(1, itemId);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
-				categories.add(rs.getString("category"));
+				String category = rs.getString("category");
+				categories.add(category);
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 		return categories;
-
 	}
 
 	@Override
 	public List<Item> searchItems(double lat, double lon, String term) {
-		TicketMasterAPI tmAPI = new TicketMasterAPI();
-		List<Item> items = tmAPI.search(lat, lon, term);//TicketMasterAPI里的search这个method，找到相应我们所需要的内容
+		TicketMasterAPI ticketMasterAPI = new TicketMasterAPI();
+		List<Item> items = ticketMasterAPI.search(lat, lon, term);
 		for (Item item : items) {
-			saveItem(item);//保存
+			saveItem(item);
 		}
 		return items;
-
 	}
 
 	@Override
-	// 上面searchItems调用了saveItem，也就是说把找到的数据放在了数据库里这个步骤
-	public void saveItem(Item item) {//找到数据，在数据库里加入并保存数据
-		if (conn == null) {//connection 建立失败
+	public void saveItem(Item item) {
+		if (conn == null) {
+			System.err.println("DB connection failed");
 			return;
-		} 
+		}
+
+		// sql injection
+		// select * from users where username = '' AND password = '';
+		// username: fakeuser ' OR 1 = 1; DROP --
+		// select * from users where username = 'fakeuser ' OR 1 = 1 --' AND password =
+		// '';
 		try {
-			// SQL Injection: 使用(?, ?, ?, ?, ?, ?, ?)可以防止sql injection
-			// Example:
-			// SELECT * FROM users WHERE username = '<username>' AND password = <'password'>;
-			// sql = SELECT * FROM users WHERE username = '" + <username> + "' 
-			// 				AND password = <'" + password + "'>;
-			// username: abcd
-			// password: 123456
-			// SELECT * FROM users WHERE username = '<abcd>' AND password = <'123456'>;
-			// username: abcd 
-			// password: 123456 'OR '1' = '1
-			// SELECT * FROM users WHERE username = '<abcd>' AND password = <'123456' OR '1' = '1'>;
-			// 不用密码永远成功
 			String sql = "INSERT IGNORE INTO items VALUES (?, ?, ?, ?, ?, ?, ?)";
-			/* "IGNORE":INSERT是往数据库里放东西，如果数据库里已经有的话，例如primary key已经出现的话，再放进去一样的内容就会出错
-			IGNORE就是帮助我们观察这个数据是不是已经在数据库里了，有的话，就不执行这条语句，就避免了错误 */
-			//如果我们想覆盖原来的值的话，可以用UPDATE这条语句
-			//String sql = "INSERT IGNORE INTO items VALUES (" + item.getItemId() + ", ")";
-			
-			PreparedStatement stmt = conn.prepareStatement(sql);
-			stmt.setString(1, item.getItemId());//位置 值 //getItemId()在entity ltem里
-			stmt.setString(2, item.getName());
-			stmt.setDouble(3, item.getRating());
-			stmt.setString(4, item.getAddress());
-			stmt.setString(5, item.getImageUrl());
-			stmt.setString(6, item.getUrl());
-			stmt.setDouble(7, item.getDistance()); // 注入所有值
-			stmt.execute();//return boolean, 检查上面注入语句是否成功
-			//stmt.executeUpdate(); return int, update了多少条记录
-			
-			sql = "INSERT IGNORE INTO categories VALUES(?, ?)";//用stmt的话，这条语句只使用一次
-			stmt = conn.prepareStatement(sql);
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, item.getItemId());
+			ps.setString(2, item.getName());
+			ps.setDouble(3, item.getRating());
+			ps.setString(4, item.getAddress());
+			ps.setString(5, item.getImageUrl());
+			ps.setString(6, item.getUrl());
+			ps.setDouble(7, item.getDistance());
+			ps.execute();
+
+			sql = "INSERT IGNORE INTO categories VALUES(?, ?)";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, item.getItemId());
 			for (String category : item.getCategories()) {
-				stmt.setString(1, item.getItemId());
-				stmt.setString(2, category);
-				stmt.execute();
+				ps.setString(2, category);
+				ps.execute();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	//给userId,得到full name
+	@Override
+	public String getFullname(String userId) {
+		if (conn == null) {
+			return "";
+		}
+		
+		String name = "";
+		try {
+			String sql = "SELECT first_name, last_name FROM users WHERE user_id = ? ";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setString(1, userId);
+			ResultSet rs = statement.executeQuery();
+			
+			while (rs.next()) {
+				name = rs.getString("first_name") + " " + rs.getString("last_name");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-	}
-
-	@Override
-	public String getFullname(String userId) {
-		if (conn == null) {
-			return null;
-		}
-		String name = "";
-		try {
-			String sql = "SELECT first_name, last_name from users WHERE user_id = ?";
-			PreparedStatement statement = conn.prepareStatement(sql);
-			statement.setString(1, userId);
-			ResultSet rs = statement.executeQuery();
-			if (rs.next()) {
-				name = String.join(" ", rs.getString("first_name"), rs.getString("last_name"));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		return name;
+
 	}
 
 	@Override
@@ -260,17 +250,42 @@ public class MySQLConnection implements DBConnection {
 			return false;
 		}
 		try {
-			String sql = "SELECT user_id from users WHERE user_id = ? and password = ?";
-			PreparedStatement statement = conn.prepareStatement(sql);
+			String sql="SELECT * FROM users WHERE user_id = ? AND password = ? ";
+			PreparedStatement statement=conn.prepareStatement(sql);
 			statement.setString(1, userId);
 			statement.setString(2, password);
-			ResultSet rs = statement.executeQuery();
-			if (rs.next()) {
+			ResultSet rs=statement.executeQuery();
+			while (rs.next()) {
 				return true;
 			}
-		} catch (Exception e) {
+		} catch (SQLException e){
 			e.printStackTrace();
 		}
 		return false;
+
 	}
+	
+	@Override
+	public boolean registerUser(String userId, String password, String firstname, String lastname) {
+		if (conn == null) {
+			System.err.println("DB connection failed");
+			return false;
+		}
+
+		try {
+			String sql = "INSERT IGNORE INTO users VALUES (?, ?, ?, ?)";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, userId);
+			ps.setString(2, password);
+			ps.setString(3, firstname);
+			ps.setString(4, lastname);
+			
+			return ps.executeUpdate() == 1;//executeUpdate有个int type return, "1" means successful
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;	
+	}
+
+
 }
