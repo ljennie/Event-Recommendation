@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="description" content="Item Recommendation">
   <meta name="author" content="Your Name">
-  <title>Item Recommendation Final</title>
+  <title>Event Recommendation</title>
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="styles/main.css">
@@ -20,14 +20,20 @@
     <a id="logout-link" href="logout">Logout</a>
     <i id="avatar" class="avatar fa fa-user fa-2x"></i>
   </header>
+ 
   
   <div class="container">
     <header>
-      <p>
-        <span>Item</span>
-        <br /> Recommendation
-      </p>
+	    <div id="banner">
+	     
+	        <span id="event-topic">Plan Your Personal Events</span>
+	        <br />
+	        <span id="item-recommendation">• Find the place around you</span><br />
+	     	<span id="item-recommendation">• Heart your favourite items</span><br />
+	     	<span id="item-recommendation">• Get your events recommendation</span>
+	    </div>
     </header>
+      
 
     <section class="main-section">
       <div id="login-form">
@@ -35,8 +41,12 @@
         <input id="username" name="username" type="text">
         <label for="password">Password:</label>
         <input id="password" name="password" type="password">
-        <button id="register-form-btn">New User? Register</button>
         <button id="login-btn">Login</button>
+        
+        
+        
+        <button id="register-form-btn">New User? Register</button>
+        
         <p id="login-error"></p>
       </div>
       
@@ -93,9 +103,9 @@
   </div>
   
   <footer>
-    <p class="title">What We Do</p>
-    <p>"Help you find the best place around."</p>
-    <ul>
+     <p class="title">If you love our website, please share it to your social media.</p>
+     <img id="social-media" src="assets/images/social-media-icons.png" />
+    <!-- <ul>
       <li>
         <p><i class="fa fa-map-o fa-2x"></i></p>
         <p>LaiOffer office, CA</p>
@@ -108,8 +118,8 @@
         <p><i class="fa fa-phone fa-2x"></i></p>
         <p>+1 800 123 456</p>
       </li>
-    </ul>
-  </footer>
+    </ul> -->  
+  </footer> 
   
   <script src="https://rawgit.com/emn178/js-md5/master/build/md5.min.js"></script>
   <script src="scripts/main.js"></script>

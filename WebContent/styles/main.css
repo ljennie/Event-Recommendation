@@ -21,10 +21,10 @@ ul {
  */
 .top-header {
 	align-items: center;
-	background: #DF574B;
+	background: #cc7537;
 	box-shadow: 0px 2px 10px #333333;
 	display: flex;
-	height: 60px;
+	height: 55px;
 	position: fixed;
 	top: 0;
 	width: 100%;
@@ -67,6 +67,27 @@ ul {
 	padding-right: 10px;
 }
 
+#banner {
+	background-color: #d4d4d4; 
+    opacity: 0.7;
+    width: 350px;
+    padding: 12px;
+    margin: 100px;
+}
+
+#event-topic {
+	font-size: 1.7em;
+	color: #000000;
+	font-weight: 700;
+}
+
+#item-recommendation {
+	font-size: 1.1em;
+	font-weight: 550;
+	color: #583404;
+}
+
+
 /**
  * main container
  */
@@ -82,11 +103,11 @@ ul {
 .container>header {
 	align-items: center;
 	background:
-		url('http://eudreamvilla.com/wp-content/uploads/2017/10/romantic-dinner.jpg')
+		url('https://www.bloopanimation.com/wp-content/uploads/2013/09/demo-reel-guidelines-1103x575.jpg')
 		no-repeat 50% 40%;
 	background-size: 100%;
 	display: flex;
-	height: 250px;
+	height: 295px;
 }
 
 .container>header p {
@@ -99,18 +120,21 @@ ul {
 }
 
 .container>header span {
-	color: #FBAF41;
+	color: #d75915;
 }
+
+
 
 /**
  * login form
  */
 #login-form {
-	color: #624630;
+	color: #070305;
 	margin: 0px auto;
 	overflow: auto;
 	padding: 40px;
 	width: 350px;
+	font-weight: 450;
 }
 
 #login-form label {
@@ -325,13 +349,18 @@ ul {
  * footer section
  */
 footer {
-	background: #434343;
 	font-size: 0.8em;
-	height: 200px;
+	align-items: center;
+	background: #000000;
+	box-shadow: 0px 2px 10px #333333;
+	display: flex;
+	height: 45px;
 	position: relative;
+	top: 0;
+	width: 100%;
 }
 
-footer p {
+ footer p {
 	text-align: center;
 }
 
@@ -348,4 +377,8 @@ footer ul {
 
 footer ul li {
 	flex: 1;
+}  
+
+#social-media {
+	width: 130px;
 }
