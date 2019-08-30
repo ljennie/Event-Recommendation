@@ -1,4 +1,5 @@
 # Event-Recommendation
+A web application for users to search nearby events based on their preferences and browsing history.
 
 Login Page
 ![login_page](https://user-images.githubusercontent.com/40128001/64046434-777c9480-cb31-11e9-8546-0c23fccc0a5f.jpg)
